@@ -384,8 +384,6 @@ public class GitHubSCMNavigator extends SCMNavigator {
 
     /**
      * Get a charset encoding
-     * @param ent
-     * @return
      */
     private static Charset getEncoding(HttpEntity ent) {
         Header hdr = ent.getContentEncoding();
