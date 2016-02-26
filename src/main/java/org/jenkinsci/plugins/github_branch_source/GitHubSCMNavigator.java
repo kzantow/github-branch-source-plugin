@@ -70,7 +70,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.github.GHMyself;
@@ -364,10 +365,11 @@ public class GitHubSCMNavigator extends SCMNavigator {
      */
     protected String getResponse(UsernamePasswordCredentials creds, HttpUriRequest request) throws Exception {
         org.apache.http.auth.UsernamePasswordCredentials httpCreds = new org.apache.http.auth.UsernamePasswordCredentials(creds.getUsername(), creds.getPassword().getPlainText());
-        DefaultHttpClient httpClient = new DefaultHttpClient();
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
         credsProvider.setCredentials(AuthScope.ANY, httpCreds);
-        httpClient.setCredentialsProvider(credsProvider);
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setDefaultCredentialsProvider(credsProvider)
+                .build();
         // HttpClient Basic Authentication fail; do it ourselves:
         request.setHeader("Authorization", "Basic " + Base64.encode((creds.getUsername() + ":" + creds.getPassword()).getBytes("utf-8")));
         org.apache.http.HttpResponse httpRes = httpClient.execute(request);
