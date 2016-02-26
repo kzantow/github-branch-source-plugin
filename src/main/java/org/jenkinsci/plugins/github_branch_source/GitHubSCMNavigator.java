@@ -369,7 +369,7 @@ public class GitHubSCMNavigator extends SCMNavigator {
         credsProvider.setCredentials(AuthScope.ANY, httpCreds);
         httpClient.setCredentialsProvider(credsProvider);
         // HttpClient Basic Authentication fail; do it ourselves:
-        request.setHeader("Authorization", "Basic " + Base64.encode((creds.getUsername() + ":" + creds.getPassword()).getBytes()));
+        request.setHeader("Authorization", "Basic " + Base64.encode((creds.getUsername() + ":" + creds.getPassword()).getBytes("utf-8")));
         org.apache.http.HttpResponse httpRes = httpClient.execute(request);
         HttpEntity ent = httpRes.getEntity();
         String payload = IOUtils.toString(ent.getContent(), getEncoding(ent));
